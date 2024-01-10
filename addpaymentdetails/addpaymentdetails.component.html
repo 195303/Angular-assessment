@@ -1,0 +1,71 @@
+<h1>Add Payment Details</h1>
+<br>
+<div>
+    <form (submit)="addDetails(F)" #F="ngForm">
+        <div class="form-group" [ngClass]="{'has-error':usN.invalid && usN.touched}">
+            Username : <input type="text" class="form-control" id="username" [(ngModel)]="newDetail.username"
+                name="uname" ngModel #usN="ngModel" required minlength="4" pattern="^[a-zA-Z]+$">
+            {{usN.errors|json}}
+            <p class="alert-danger" *ngIf="usN.errors?.['required'] && usN.touched">
+                Please Enter Username </p>
+            <p class="alert-danger" *ngIf="usN.errors?.['minlength'] && usN.touched">
+                Username Must be in Minimum 4 Characters </p>
+            <p class="alert-danger" *ngIf="usN.errors?.['pattern'] && usN.touched">
+                Please Enter Username as Characters</p>
+
+        </div>
+
+        <div class="form-group">
+            CardNumber: <input type="text" id="cardnumber" class="form-control" [(ngModel)]="newDetail.cardnumber"
+                name="unumber" ngModel [value]="newDetail.cardnumber | cardnumber" minlength="10" maxlength="14"
+                size="19" required>
+            <img *ngIf="newDetail.cardnumber && newDetail.cardnumber.length > 0" [src]="newDetail.cardnumber | cardtype"
+                style="height: 50px;width: 50px;">
+            <br /><br>
+        </div>
+
+        <div class="form-group">
+
+            Balance : <input type="number" id="balance" class="form-control" [(ngModel)]="newDetail.balance"
+                name="ubalance" ngModel required> <br>
+
+        </div>
+
+        <button class="btn btn-primary" (click)="addDetails(F)" [disabled]="F.invalid">Add Details</button>
+
+    </form>
+</div>
+
+<br>
+<hr>
+
+<h2>List Payment Details</h2>
+
+Search Type:<select [(ngModel)]="searchTyp">
+    <option value="username">Username</option>
+    <option value="cardNumber">CardNumber</option>
+    <option value="balance">Balance</option>
+</select> <br> <br> {{searchTyp}} <br> <br>
+
+Search : <input type="text" [(ngModel)]="searchDet"> <br> <br>
+<table>
+    <tr>
+        <th>S.No</th>
+        <th>Username</th>
+        <th>Card Number</th>
+        <th>Balance</th>
+        <th>Action</th>
+    </tr>
+
+    <tr *ngFor="let detail of payDetails | filter: searchTyp : searchDet ; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ detail.username }}</td>
+        <td>{{ detail.cardnumber}}</td>
+        <td>₹{{ detail.balance|currency }}</td>
+        <td><button class="btn btn-success" (click)="editDetails()">Edit</button>&nbsp;
+            <button class="btn btn-danger" (click)="deleteDetails(i)">Delete</button>
+        </td>
+    </tr>
+    {{F.submitted}}
+
+</table>
